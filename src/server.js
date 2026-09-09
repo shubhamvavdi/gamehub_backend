@@ -19,6 +19,7 @@ app.set('trust proxy', 1)
 app.use(helmet({ crossOriginResourcePolicy: false }))
 app.use(cors({ origin: corsOrigin, credentials: false }))
 app.use(express.json({ limit: '200kb' }))
+app.use('/ads.txt', express.static('public/ads.txt', { fallthrough: false }))
 app.use(
   rateLimit({
     windowMs: rateWindow,
