@@ -5,6 +5,7 @@ Backend for the published SDK package `@gamehubsdk/gamehub-ad-sdk`.
 - validates game API keys
 - serves banner, interstitial and rewarded creatives
 - supports game and placement targeting
+- serves the public game catalog used by the GameHub frontend
 - campaign/creative approval workflow
 - one-time signed impression and click tracking
 - click redirect tracking
@@ -92,6 +93,8 @@ All admin endpoints require `X-Admin-Key`. SDK endpoints requiring game credenti
 
 - `GET /health` checks database availability.
 - `GET /v1/admin/games` lists games.
+- `GET /v1/catalog` returns active games. Supports `search`, `category`, `tag`, and `sort=popular|recent`.
+- `GET /v1/catalog/:slug` returns one active game for the game detail page.
 - `POST /v1/admin/games` creates a game and returns its one-time SDK API key.
 - `PATCH /v1/admin/games/:id` activates or disables a game.
 - `GET /v1/admin/campaigns` lists campaigns with creative counts.
