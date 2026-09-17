@@ -45,6 +45,14 @@ app.get('/health', async (req, res) => {
     res.status(503).json({ ok: false, database: 'disconnected' })
   }
 })
+app.get('/db-version', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT version()')
+    res.type('text').send(rows[0].version)
+  } catch {
+    res.status(503).type('text').send('Database unavailable')
+  }
+})
 app.use('/v1/sdk', sdk)
 app.use('/v1/catalog', catalog)
 app.use('/v1', sdk) // backward-compatible analytics/tracking paths remain under /v1
