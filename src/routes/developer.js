@@ -25,7 +25,7 @@ const gameSchema = z.object({
 router.get('/games', asyncHandler(async (req, res) => {
   const developerId = typeof req.query.developerId === 'string' ? req.query.developerId.trim() : ''
   if (!idSchema.safeParse(developerId).success) return res.status(400).json({ ok: false, error: 'developerId is required' })
-  const [rows] = await pool.query('SELECT game_id, slug, name, category, rating, thumbnail_url, description, tags, badge, game_url, plays, featured, status, developer_id, created_at FROM games WHERE developer_id=? ORDER BY created_at DESC', [developerId])
+  const [rows] = await pool.query('SELECT game_id, slug, name, category, rating, thumbnail_url, description, tags, badge, game_url, plays, featured, status, approval_status, developer_id, created_at FROM games WHERE developer_id=? ORDER BY created_at DESC', [developerId])
   res.json({ ok: true, games: rows })
 }))
 
@@ -35,12 +35,32 @@ router.post('/games', asyncHandler(async (req, res) => {
   const game = body.data
   const apiKey = `ghpk_${crypto.randomBytes(24).toString('hex')}`
   try {
-    await pool.query('INSERT INTO games (game_id, slug, name, category, thumbnail_url, description, tags, badge, game_url, developer_id, public_key_hash, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', [game.id, game.slug || game.id, game.name, game.category, game.thumbnailUrl, game.description, JSON.stringify(game.tags), game.badge || null, game.gameUrl, game.developerId, hash(apiKey), 'disabled'])
+    await pool.query('INSERT INTO games (game_id, slug, name, category, thumbnail_url, description, tags, badge, game_url, developer_id, public_key_hash, status, approval_status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', [game.id, game.slug || game.id, game.name, game.category, game.thumbnailUrl, game.description, JSON.stringify(game.tags), game.badge || null, game.gameUrl, game.developerId, hash(apiKey), 'disabled', 'pending'])
   } catch (error) {
     if (error.code === '23505') return res.status(409).json({ ok: false, error: 'Game ID or slug already exists' })
     throw error
   }
-  res.status(201).json({ ok: true, status: 'under_review', game: { id: game.id, slug: game.slug || game.id, name: game.name, developerId: game.developerId }, apiKey })
+
+  const savedGame = {
+    game_id: game.id,
+    slug: game.slug || game.id,
+    name: game.name,
+    category: game.category,
+    rating: 0,
+    thumbnail_url: game.thumbnailUrl,
+    description: game.description,
+    tags: game.tags,
+    badge: game.badge || null,
+    game_url: game.gameUrl,
+    plays: 0,
+    featured: false,
+    status: 'disabled',
+    approval_status: 'pending',
+    developer_id: game.developerId,
+    created_at: new Date().toISOString()
+  }
+
+  res.status(201).json({ ok: true, status: 'under_review', game: savedGame, apiKey })
 }))
 
 module.exports = router

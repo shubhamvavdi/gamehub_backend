@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS games (
  id BIGSERIAL PRIMARY KEY, game_id VARCHAR(100) NOT NULL UNIQUE, slug VARCHAR(160) UNIQUE, name VARCHAR(160) NOT NULL, category VARCHAR(80) NOT NULL DEFAULT 'Arcade', rating NUMERIC(2,1) NOT NULL DEFAULT 0.0, thumbnail_url TEXT, description TEXT, tags JSONB, badge VARCHAR(40), game_url TEXT, plays BIGINT NOT NULL DEFAULT 0, featured BOOLEAN NOT NULL DEFAULT FALSE, developer_id VARCHAR(100),
- public_key VARCHAR(128), public_key_hash CHAR(64), status VARCHAR(16) NOT NULL DEFAULT 'active' CHECK (status IN ('active','disabled')), created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+ public_key VARCHAR(128), public_key_hash CHAR(64), status VARCHAR(16) NOT NULL DEFAULT 'disabled' CHECK (status IN ('active','disabled')), approval_status VARCHAR(16) NOT NULL DEFAULT 'pending' CHECK (approval_status IN ('pending','approved','rejected')), review_reason TEXT, reviewed_at TIMESTAMPTZ, created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_games_status ON games(status);
 
