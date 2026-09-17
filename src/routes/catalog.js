@@ -18,16 +18,21 @@ function serializeGame(row) {
     title: row.name,
     category: row.category || 'Arcade',
     rating: Number(row.rating || 0).toFixed(1),
-    thumbnail: row.thumbnail_url || 'https://placehold.co/900x675/17202b/ffffff?text=GameHub',
-    description: row.description || 'Play this free browser game on GameHub.',
-    tags,
+    thumbnail: row.thumbnail_url || null,
+    description: row.description || null,
+    tags: Array.isArray(tags) ? tags : [],
     badge: row.badge || undefined,
-    gameUrl: row.game_url || '/games/demo/index.html',
+    gameUrl: row.game_url || null,
     plays: Number(row.plays || 0),
     featured: Boolean(row.featured),
     createdAt: row.created_at
   }
 }
+
+router.get('/categories', asyncHandler(async (req, res) => {
+  const [rows] = await pool.query("SELECT category, COUNT(*)::int AS game_count FROM games WHERE status='active' AND category IS NOT NULL AND category<>'' GROUP BY category ORDER BY LOWER(category)")
+  res.json({ ok: true, categories: rows.map(row => ({ name: row.category, gameCount: Number(row.game_count || 0) })) })
+}))
 
 router.get('/', asyncHandler(async (req, res) => {
   const filters = []

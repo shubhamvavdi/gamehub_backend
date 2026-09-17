@@ -8,6 +8,7 @@ const pool = require('./config/db')
 const sdk = require('./routes/sdk')
 const admin = require('./routes/admin')
 const catalog = require('./routes/catalog')
+const developer = require('./routes/developer')
 const { notFound, errorHandler } = require('./middleware/errors')
 const app = express()
 const port = Number(process.env.PORT || 4000)
@@ -55,6 +56,7 @@ app.get('/db-version', async (req, res) => {
 })
 app.use('/v1/sdk', sdk)
 app.use('/v1/catalog', catalog)
+app.use('/v1/developer', developer)
 app.use('/v1', sdk) // backward-compatible analytics/tracking paths remain under /v1
 app.use(
   '/v1/admin',

@@ -93,6 +93,8 @@ All admin endpoints require `X-Admin-Key`. SDK endpoints requiring game credenti
 
 - `GET /health` checks database availability.
 - `GET /v1/admin/games` lists games.
+- `GET /v1/developer/games?developerId=...` lists games submitted by a developer.
+- `POST /v1/developer/games` submits a validated game as `disabled`/under review. The response returns the one-time SDK API key.
 - `GET /v1/catalog` returns active games. Supports `search`, `category`, `tag`, and `sort=popular|recent`.
 - `GET /v1/catalog/:slug` returns one active game for the game detail page.
 - `POST /v1/admin/games` creates a game and returns its one-time SDK API key.
@@ -110,6 +112,14 @@ All admin endpoints require `X-Admin-Key`. SDK endpoints requiring game credenti
 - `POST /v1/sdk/analytics` records a validated SDK event for the authenticated game.
 
 `DirectCampaignProvider` is the active source. It serves approved direct campaigns only; no external ad network is claimed or simulated. A future provider can implement the same `findAd({ gameId, type, placementId })` boundary without changing the SDK route or response.
+
+## Game publishing flow
+1. A developer opens the frontend `/developers` dashboard and enters their developer ID.
+2. The dashboard submits the game metadata to `POST /v1/developer/games`.
+3. The game is stored in PostgreSQL with `status='disabled'`, so it is not visible in the public catalog yet.
+4. An administrator opens the frontend `/admin` panel, enters `ADMIN_API_KEY`, and approves the game. Approval changes its status to `active`; disabling it removes it from the public catalog.
+
+The current developer dashboard uses a developer ID as an API filter, not as proof of identity. Add real developer authentication before exposing it publicly.
 
 ## Postman smoke flow
 1. `GET http://localhost:4000/health`.
