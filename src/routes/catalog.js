@@ -7,7 +7,7 @@ const router = express.Router()
 function serializeGame(row) {
   let tags = []
   try {
-    tags = row.tags ? JSON.parse(row.tags) : []
+    tags = row.tags || []
   } catch {
     tags = []
   }
@@ -37,7 +37,7 @@ router.get('/', asyncHandler(async (req, res) => {
   const tag = typeof req.query.tag === 'string' ? req.query.tag.trim() : ''
 
   if (search) {
-    filters.push('(name LIKE ? OR description LIKE ? OR category LIKE ?)')
+    filters.push('(name ILIKE ? OR description ILIKE ? OR category ILIKE ?)')
     values.push(`%${search}%`, `%${search}%`, `%${search}%`)
   }
   if (category) {
@@ -45,8 +45,8 @@ router.get('/', asyncHandler(async (req, res) => {
     values.push(category)
   }
   if (tag) {
-    filters.push('JSON_SEARCH(tags, "one", ?) IS NOT NULL')
-    values.push(tag)
+    filters.push('tags @> ?::jsonb')
+    values.push(JSON.stringify([tag]))
   }
 
   const where = filters.length ? `WHERE status='active' AND ${filters.join(' AND ')}` : "WHERE status='active'"

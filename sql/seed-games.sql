@@ -1,5 +1,3 @@
-USE gamehub_ads;
-
 INSERT INTO games (game_id, slug, name, category, rating, thumbnail_url, description, tags, badge, game_url, plays, featured, status)
 VALUES
 ('demo-game-001', 'demo', 'Super Cube Jump', 'Arcade', 4.8, 'https://images.unsplash.com/photo-1614294148960-9aa740632a87?auto=format&fit=crop&w=900&q=85', 'Jump, dodge and beat your high score in this fast arcade challenge.', '["Arcade","Jumping","Casual"]', 'Featured', '/games/demo/index.html', 12405, TRUE, 'active'),
@@ -8,4 +6,4 @@ VALUES
 ('zombie-shooter', 'zombie-shooter', 'Zombie Shooter', 'Action', 4.7, 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=85', 'Keep moving, line up your shots and survive the endless night.', '["Action","Shooting","Adventure"]', 'New', '/games/demo/index.html', 10400, FALSE, 'active'),
 ('sky-high', 'sky-high', 'Sky High', 'Casual', 4.3, 'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?auto=format&fit=crop&w=900&q=85', 'Climb above the clouds and see how far your timing can take you.', '["Casual","Adventure","Skill"]', NULL, '/games/demo/index.html', 5100, FALSE, 'active'),
 ('drift-king', 'drift-king', 'Drift King', 'Racing', 4.9, 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=85', 'Burn rubber, chain perfect drifts and become the king of the track.', '["Racing","Cars","Sports"]', 'Hot', '/games/demo/index.html', 15100, FALSE, 'active')
-ON DUPLICATE KEY UPDATE slug=VALUES(slug), name=VALUES(name), category=VALUES(category), rating=VALUES(rating), thumbnail_url=VALUES(thumbnail_url), description=VALUES(description), tags=VALUES(tags), badge=VALUES(badge), game_url=VALUES(game_url), plays=VALUES(plays), featured=VALUES(featured), status=VALUES(status);
+ON CONFLICT (game_id) DO UPDATE SET slug=EXCLUDED.slug, name=EXCLUDED.name, category=EXCLUDED.category, rating=EXCLUDED.rating, thumbnail_url=EXCLUDED.thumbnail_url, description=EXCLUDED.description, tags=EXCLUDED.tags, badge=EXCLUDED.badge, game_url=EXCLUDED.game_url, plays=EXCLUDED.plays, featured=EXCLUDED.featured, status=EXCLUDED.status;

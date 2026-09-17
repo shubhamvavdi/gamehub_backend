@@ -60,10 +60,14 @@ app.use(
 )
 app.use(notFound)
 app.use(errorHandler)
-app.listen(port, () =>
-  console.log(
-    `GameHub backend listening on ${
-      process.env.PUBLIC_BASE_URL || `http://localhost:${port}`
-    }`
+if (require.main === module) {
+  app.listen(port, () =>
+    console.log(
+      `GameHub backend listening on ${
+        process.env.PUBLIC_BASE_URL || `http://localhost:${port}`
+      }`
+    )
   )
-)
+}
+
+module.exports = app

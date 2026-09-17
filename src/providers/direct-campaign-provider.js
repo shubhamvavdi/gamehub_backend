@@ -7,7 +7,7 @@ class DirectCampaignProvider{
    AND p.status='active' AND p.approval_status='approved'
    AND (p.game_id IS NULL OR p.game_id=?)
    AND (p.placement_id IS NULL OR p.placement_id='' OR p.placement_id=?)
-   AND (p.starts_at IS NULL OR p.starts_at<=UTC_TIMESTAMP()) AND (p.ends_at IS NULL OR p.ends_at>=UTC_TIMESTAMP())
+  AND (p.starts_at IS NULL OR p.starts_at<=CURRENT_TIMESTAMP) AND (p.ends_at IS NULL OR p.ends_at>=CURRENT_TIMESTAMP)
     ORDER BY p.weight DESC, RAND() LIMIT 20`,[type,gameId,placementId||'']);
   for(const ad of rows){
     if(ad.image_url&&!isHttpUrl(ad.image_url))continue;

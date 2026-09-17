@@ -20,7 +20,7 @@ This backend does **not** magically receive ads from npm or Google. An ad appear
 
 ## Install
 1. Copy `.env.example` to `.env` and set real values.
-2. Create/import a fresh MySQL database using `schema.sql`.
+2. Create a Neon PostgreSQL project and run `sql/schema.sql`, followed by `sql/seed-games.sql`.
 3. `npm install`
 4. `npm start`
 5. Open `/health`.
@@ -71,7 +71,7 @@ Example:
 For production, add a real admin dashboard and advertiser authentication before opening campaign creation to public advertisers.
 
 ## Existing database
-The supplied `schema.sql` is safest for a new database. If you already have the old v1 database, back it up first and migrate columns carefully; do not blindly import over production data.
+The supplied `schema.sql` targets Neon PostgreSQL. Set Neon’s pooled connection string as `DATABASE_URL`; keep `sslmode=require` enabled for production.
 
 ## SDK integration flow
 ```js
